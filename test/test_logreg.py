@@ -43,6 +43,7 @@ valid_split= int(len(y_remainder)*0.5)
 X_val, X_test = X[train_split:train_split+ valid_split], X[train_split+valid_split:]
 y_val, y_test = y[train_split:train_split+ valid_split], y[train_split+valid_split:]
 
+#scale data 
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_val = sc.transform(X_val)

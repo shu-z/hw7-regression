@@ -131,8 +131,10 @@ class LogisticRegressor(BaseRegressor):
         Returns: 
             The predicted labels (y_pred) for given X.
         """
-        #this part taken from umair's example 
-        #but basically multiplies weights and coefficients 
+
+        #adapted from umair's class example 
+        
+        # dot product of weights and coefficients 
         if X.shape[1] == self.num_feats:
             X = np.hstack([X, np.ones((X.shape[0], 1))])
         y_pred = X.dot(self.W).flatten()
@@ -142,6 +144,7 @@ class LogisticRegressor(BaseRegressor):
         y_pred_sigmoid=(1/(1+np.exp(-y_pred)))
         
         return(y_pred_sigmoid)
+    
     
     def loss_function(self, y_true, y_pred) -> float:
         """
@@ -156,12 +159,12 @@ class LogisticRegressor(BaseRegressor):
             The mean loss (a single number).
         """
 
-        #sometimes gets divide by zero warning
-        #add some error so zeros are transformed to small values 
-        loss= -np.mean(y_true*(np.log(y_pred + self.error)) + 
-                       (1-y_true)*np.log(1-y_pred + self.error)) 
+        #loss following formula for BCE loss 
+        #sometimes gets divide by zero warning, so added error to transform zeros to small values 
+        loss= -np.mean(y_true*(np.log(y_pred + self.error)) +  (1-y_true)*np.log(1-y_pred + self.error)) 
 
         return(loss)
+    
         
     def calculate_gradient(self, y_true, X) -> np.ndarray:
         """
@@ -174,13 +177,15 @@ class LogisticRegressor(BaseRegressor):
 
         Returns: 
             Vector of gradients.
-        """
-        
+        """  
+
         #adapted from class example 
 
         #make pred and calculate error
         y_pred = self.make_prediction(X)
         error = y_true - y_pred
+
         #calculate gradient
         grad = -np.dot(X.T, error) / len(y_true)
+
         return grad
