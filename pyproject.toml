@@ -6,14 +6,14 @@ requires = [
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "align"
+name = "regression"
 authors = [{name = "Shu Zhang", email = "shu.zhang2@ucsf.edu"}]
 readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 dependencies = [
-    "pytest", "numpy", "matplotlib"
+    "pytest", "numpy", "matplotlib", "pandas", "scikit-learn"
 ]
 
 [project.urls]

@@ -48,15 +48,14 @@ X_train = sc.fit_transform(X_train)
 X_val = sc.transform(X_val)
 X_test = sc.transform(X_test)
 
-#make logreg class 
-log_model = LogisticRegressor(num_feats = len(w) - 1, learning_rate=0.01, max_iter=5000, batch_size=50)
-
-
 
 
 def test_prediction():
 
-	#fit logreg model
+	#make logreg class 
+	log_model = LogisticRegressor(num_feats = len(w) - 1, learning_rate=0.01, max_iter=5000, batch_size=50)
+
+	#train logreg model 
 	log_model.train_model(X_train, y_train, X_val, y_val)
 	
 	#make predictions on new test set 
@@ -71,9 +70,11 @@ def test_prediction():
 	assert accuracy>0.6, "accuracy is worse than 0.6!"
 
 
-	
 
 def test_loss_function():
+	
+	#make logreg class to be able to use loss function 
+	log_model = LogisticRegressor(num_feats = 3)
 
 	#make random y_true and y_pred
 	y_true=[0, 1, 1, 0, 1, 1, 0]
@@ -85,6 +86,8 @@ def test_loss_function():
 
 	#check that bce loss from our function is close to sklearn loss with reasonable tolerance 
 	assert np.isclose(logreg_loss, sklearn_loss, rtol=1e-4), 'BCE loss is not as expected'
+
+
 
 def test_gradient():
 
@@ -106,19 +109,33 @@ def test_gradient():
 	
 
 def test_training():
-	pass
+
+	#make logreg class 
+	logmod_train = LogisticRegressor(num_feats = len(w) - 1, learning_rate=0.01, max_iter=5000, batch_size=50)
+	#train model 
+	logmod_train.train_model(X_train, y_train, X_val, y_val)
+	
+	#check loss is decreasing, such that last 10 loss values is on average, smaller than first 10
+	first_loss= logmod_train.loss_hist_val[:10]
+	last_loss=logmod_train.loss_hist_val[-10:]
+
+	assert (np.mean(first_loss)>np.mean(last_loss))
+
+
+
+	#make a diff logreg class 
+	logmod_weights = LogisticRegressor(num_feats = len(w) - 1, learning_rate=0.01, max_iter=5000, batch_size=50)
+	#set starting weights manually 
+	logmod_weights.W = np.zeros(len(w))	
+	
+	#train model 
+	logmod_weights.train_model(X_train, y_train, X_val, y_val)
+
+	#check that ending weights are not same as starting weights 
+	assert np.array_equal(logmod_weights.W, np.zeros(len(w))) == False, 'weights are not being updated'
 
 
 
 
 
-
-
-	#check loss history
-
-
-	#check weights are being updated 
-
-
-
-	#log_model.loss_history_val[0]
+	
