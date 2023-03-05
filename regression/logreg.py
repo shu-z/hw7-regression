@@ -133,8 +133,10 @@ class LogisticRegressor(BaseRegressor):
         """
         #this part taken from umair's example 
         #but basically multiplies weights and coefficients 
-        X = np.hstack([X, np.ones((X.shape[0], 1))])
+        if X.shape[1] == self.num_feats:
+            X = np.hstack([X, np.ones((X.shape[0], 1))])
         y_pred = X.dot(self.W).flatten()
+        #y_pred = X.dot(self.W)
         
         #pass output of linear regression into the sigmoid function
         y_pred_sigmoid=(1/(1+np.exp(-y_pred)))
@@ -174,6 +176,8 @@ class LogisticRegressor(BaseRegressor):
         Returns: 
             Vector of gradients.
         """
+        
+   
         #adapted from umair's example
         y_pred = self.make_prediction(X)
         error = y_true - y_pred

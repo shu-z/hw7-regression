@@ -1,3 +1,5 @@
+![BuildStatus](https://github.com/shu-z/hw7-regression/actions/workflows/main.yml/badge.svg)
+
 # HW 7: logistic regression
 
 In this assignment, you'll implement a classifier using logistic regression, optimized with gradient descent.
