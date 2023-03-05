@@ -28,17 +28,17 @@ X = np.random.rand(num_points, len(w) - 1)
 noise= np.random.rand(num_points, 1) * 0.01
 y_linear = (np.expand_dims(X.dot(w[:-1]), 1) - w[-1] + noise).flatten()
 
+#transform linear y to sigmoid and rescale y 
 y=(1/(1+np.exp(-y_linear)))
-#rescale y between 0 and 1
 y = (y-np.min(y))/(np.max(y)-np.min(y))
 
 
-#first split out train 
+#split out train set 
 train_split = int(0.6 * num_points)
 X_train, X_remainder = X[:train_split], X[train_split:]
 y_train, y_remainder = y[:train_split], y[train_split:]
 
-#get idx for splitting validation and test 
+#split out validation and test sets 
 valid_split= int(len(y_remainder)*0.5)
 X_val, X_test = X[train_split:train_split+ valid_split], X[train_split+valid_split:]
 y_val, y_test = y[train_split:train_split+ valid_split], y[train_split+valid_split:]
@@ -56,18 +56,19 @@ log_model = LogisticRegressor(num_feats = len(w) - 1, learning_rate=0.01, max_it
 
 def test_prediction():
 
+	#fit logreg model
 	log_model.train_model(X_train, y_train, X_val, y_val)
 	
+	#make predictions on new test set 
 	model_pred = log_model.make_prediction(X_test)
 	model_pred_binary = np.where(model_pred > 0.5, 1, 0)
 	y_test_binary=np.where(y_test > 0.5, 1, 0)
-
 
 	#get accuracy of prediction on separate test set 
 	accuracy=np.sum(model_pred_binary == y_test_binary)/len(y_test_binary)
 
 	#check accuracy is at least a little better than chance lol
-	assert accuracy>0.6
+	assert accuracy>0.6, "accuracy is worse than 0.6!"
 
 
 	
@@ -91,10 +92,11 @@ def test_gradient():
 	X=np.array([[1,1], [2, 5], [5,10]])
 	y=np.array([0.25, 0.5, 0.75])
 
+	#make logreg class, need to add W for make_prediction
 	logmod_testgrad = LogisticRegressor(num_feats=3)
-	#need to add W for make_prediction
 	logmod_testgrad.W = np.array([0,0])
 
+	#calculate gradient 
 	grad = logmod_testgrad.calculate_gradient(y, X)
 
 	#compare to manually calcualted values

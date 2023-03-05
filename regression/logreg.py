@@ -155,10 +155,9 @@ class LogisticRegressor(BaseRegressor):
         Returns: 
             The mean loss (a single number).
         """
+
         #sometimes gets divide by zero warning
         #add some error so zeros are transformed to small values 
-        #loss= -(y_true*(np.log(y_pred + self.error)) + (1-y_true)*np.log(1-y_pred + self.error)) / len(y_true)
-        
         loss= -np.mean(y_true*(np.log(y_pred + self.error)) + 
                        (1-y_true)*np.log(1-y_pred + self.error)) 
 
@@ -177,9 +176,11 @@ class LogisticRegressor(BaseRegressor):
             Vector of gradients.
         """
         
-   
-        #adapted from umair's example
+        #adapted from class example 
+
+        #make pred and calculate error
         y_pred = self.make_prediction(X)
         error = y_true - y_pred
+        #calculate gradient
         grad = -np.dot(X.T, error) / len(y_true)
         return grad
